@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Unidad 1 - Programación II</title>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/reset.min.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/reveal.min.css" />
+		
+		<!-- otros themes: https://revealjs.com/themes/ Ejemplos: black, white, league, beige, sky, night, serif, simple, solarized, blood, moon -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/theme/white.min.css" />
+		<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/theme/blood.min.css" /> -->
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/plugin/highlight/monokai.min.css" />
+		
+		<link rel="stylesheet" href="estilo.css" />
+		
+		<!-- plugin notación matemática -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/plugin/math/math.min.js"></script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section data-separator="^---$" data-separator-vertical="^===$" data-separator-notes="^Note:" data-markdown data-line-numbers>
+    				<textarea data-template>
+## [Unidad 1](#)
+### Programación II
+
+---
+## [Temas](#)
+
+1. Activities
+2. Layouts  
+  2.1. ConstraintLayout
+3. Recursos
+4. Vistas
+5. Eventos
+
+---
+## [1. Activities](#)
+
+- Son el componente principal en la arquitectura Android 
+- Representan una actividad o acción que el usuario puede hacer 
+- Cargan el diseño de la interfaz de usuario desde un recurso de tipo layout usando el método [setContentView()](#)
+- Acá se gestionan los [eventos](#) para dar funcionalidad al programa
+
+===
+## [1. Activities - Ejemplo](#)
+
+```kotlin[]
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+    }
+}
+```
+
+---
+## [2. Layouts](#)
+
+- Layout es un término que puede referirse a: 
+	- Al recurso (archivo) XML de diseño que está en la carpeta ["res/layout"](#)
+	- También incluye a los diversos componentes que posibilitan la organización de las vistas dentro de estos archivos XML, como es el caso de [ConstraintLayout](#) o [LinearLayout](#), entre otros
+
+===
+## [2. Layouts](#)
+
+- Existen diversos Layouts como: [ConstraintLayout, LinearLayout, FrameLayout, entre otros](#).
+- La recomendación actual es usar ConstraintLayout por:
+	- Facilidad de uso 
+	- Permite diseños extremadamente complejos 
+	- Tiene un excelente rendimiento, porque evita realizar anidaciones para diseños complejos 	
+
+---
+## [2.1. ConstraintLayout](#)
+
+- Funciona a través de [restricciones](#) 
+- Los elementos requieren mínimamente usar una [restricción vertical](#) y una [horizontal](#) 
+- Puede usar [líneas guías](#) (invisibles)
+
+===
+## [2.1. Proyecto de Ejemplo](#)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ThEnetFM4x8?si=qng4dHFZdAy7sg5q" allowfullscreen></iframe>
+
+===
+## [2.1. ConstraintLayout - Uso](#)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ovD0FxUxaaw?si=d0RnQsvq5uynxk7h" allowfullscreen></iframe>
+
+---
+## [3. Recursos](#)
+
+- Son archivos estáticos que pueden ser usados en el programa 
+- Por ejemplo: imágenes, textos, definiciones de diseño, etc 
+- En un archivo XML se puede acceder a un recurso de imagen usando una sintaxis como esta: [@drawable/imagen](#)
+
+===
+## [3. Recursos - Ejemplo](#)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/nlvwNYA3nfw?si=Jc0OrBMQ9TOdlfme" allowfullscreen></iframe>
+
+---
+## [4. Vistas](#)
+- View es la clase base para construir elementos para la interface de usuario 
+- También se les conoce como "[widgets](#)" a los elementos interactivos
+- Como por ejemplo: botones, campos de texto, imágenes, entre otros 
+
+===
+## [4. Vistas - Ejemplo](#)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/MfhX9bwRdvg?si=oss6zEKUa-1XJqL4" allowfullscreen></iframe>
+
+---
+## [5. Eventos](#)
+
+- Permiten controlar la interacción con los distintos elementos
+- Se gestionan configurando listeners 
+- Ejemplos de eventos pueden ser: Touch, Click, TextChanged, CheckedChanged, entre muchos otros
+
+===
+## [5. Preparación Proyecto para el Ejemplo](#)
+Clase Modelo
+<iframe width="560" height="315" src="https://www.youtube.com/embed/PoAVDynJfJc?si=A-SW7gCVfQoEhJjB" allowfullscreen></iframe>
+
+===
+## [5. Preparación Proyecto para el Ejemplo](#)
+Vistas en ConstraintLayout
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Ccs7VtMgO7Y?si=GWZrMmWJufvCfSWK" allowfullscreen></iframe>
+
+===
+## [5. Eventos - Click](#)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dhs5pWpyqt4?si=3JfBT-Lugq-wa7oa" allowfullscreen></iframe>
+
+===
+## [5. Eventos - TextChanged](#)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/PPqEml-nW_s?si=YD2yb9nfB3hxOPyy" allowfullscreen></iframe>
+
+===
+## [5. Eventos - CheckedChange](#)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/PqilNNl1iBQ?si=9Lr8lbfY3K__8QxB" allowfullscreen></iframe>
+
+				    </textarea>
+				</section>
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/reveal.min.js"></script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/plugin/notes/notes.min.js"></script>
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/plugin/markdown/markdown.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/plugin/highlight/highlight.min.js"></script>
+		<script>			
+			Reveal.initialize({
+				hash: true,
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX ]
+			});
+			Reveal.on('ready', e => {
+				// e.previousSlide, e.currentSlide, e.indexh, e.indexv 				
+				const claseSlide = `slide-${e.indexh}-${e.indexv}`
+				document.body.className = `reveal-viewport ${claseSlide}`
+			});
+			Reveal.on('slidechanged', e => {
+				// e.previousSlide, e.currentSlide, e.indexh, e.indexv 				
+				const claseSlide = `slide-${e.indexh}-${e.indexv}`
+				document.body.className = `reveal-viewport ${claseSlide}`
+			});
+		</script>
+	</body>
+</html>
