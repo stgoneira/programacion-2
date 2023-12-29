@@ -30,7 +30,7 @@
 ### Programación II
 
 ---
-## [Temas (Parte 1)](#)
+## [Temas](#)
 
 1. Jetpack Compose  
 	1.1. Compose  
@@ -42,16 +42,16 @@
 	1.7. LazyColumn y LazyRow  
 	
 ===
-## [Temas (Parte 2)](#)
+## [Temas](#)
 
 2. Recursos  
 	2.1. Drawables  
 	2.2. String  
-3. Formularios
-	3.1. Variables de estado 
-	3.2. Controles 
-	3.3. Ejemplos
-4. Ejemplo en Proyecto
+3. Formularios  
+	3.1. Variables de estado   
+	3.2. Controles  
+	3.3. Ejemplos  
+4. Ejemplo Completo
 
 ---
 ## [1.1. Jetpack Compose](#)
@@ -196,6 +196,11 @@ Ejemplo de Layouts, LazyColumn, Parámetros y Modifiers
 ---
 ## [2.2. Recursos de Texto](#)
 
+- Facilitan las traducciones a distintos idiomas
+- Se colocan dentro de la carpeta [res/values](#)
+- Generalmente el archivo que los contiene se llama [strings.xml](#)
+- Puedes referenciar drawables en un diseño XML usando [@string/nombre_del_recurso](#)
+- En el código Java/Kotlin, puedes usar [R.string.nombre_del_recurso](#)
 
 ---
 ## [3. Formularios en Compose](#)
@@ -204,14 +209,49 @@ Ejemplo de Layouts, LazyColumn, Parámetros y Modifiers
 ===
 ## [3. Variables de Estado](#)
 
+- Utilizadas para representar datos que pueden cambiar a lo largo del tiempo
+- Se declaran utilizando la función [remember](#) junto con la función [mutableStateOf](#)
+- Compose se encarga de actualizar automáticamente la UI para reflejar los cambios
+
+===
+## [3. Variables de Estado](#)
+
+Existen 3 formas de declararlas:
+```kotlin
+// Forma 1
+val variable = remember { mutableStateOf(valorPorDefecto) }
+// Forma 2
+var variable by remember { mutableStateOf(valorPorDefecto) }
+// Formar 3
+val (variable, setVariable) = remember { mutableStateOf(valorPorDefecto) }
+```
+
+===
+## [3. Remember](#)
+
+- Se utiliza para preservar el estado de una variable a lo largo de las recomposiciones
+- Asegura que el valor se retenga incluso cuando el componible se vuelva a calcular
+
+===
+## [3. RememberSaveable](#)
+
+- Es una variante de remember diseñada específicamente para preservar el estado incluso después de que la actividad o el fragmento se destruyan y vuelvan a crearse
+- Es útil para mantener el estado durante la rotación de la pantalla o cambios de configuración
 
 ===
 ## [3. Controles Básicos](#)
 
 - Button()
 - TextField()
-- Checkbox
-- Switch
+- Checkbox()
+- Switch()
+
+===
+## [3. Ejemplo](#)
+
+---
+## [4. Ejemplo Completo](#)
+
 
 				    </textarea>
 				</section>
