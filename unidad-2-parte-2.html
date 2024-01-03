@@ -26,205 +26,197 @@
 			<div class="slides">
 				<section data-separator="^---$" data-separator-vertical="^===$" data-separator-notes="^Note:" data-markdown data-line-numbers>
     				<textarea data-template>
-## [Unidad 2](#)
+## [Unidad 2 (Parte 2)](#)
 ### Programación II
-
----
-## [Temas (Parte 1)](#)
-
-1. Jetpack Compose  
-	1.1. Compose  
-	1.2. Layouts  
-	1.3. Composables Básicos  
-	1.4. Alineaciones  
-	1.5. Parámetros  
-	1.6. Modifiers  
-	1.7. LazyColumn y LazyRow  
-2. Recursos  
-	2.1. Drawables  
-	2.2. String  
 	
 ---
 ## [Temas (Parte 2)](#)
-3. Formularios
-4. ViewModels
+
+4. Gradle
 5. Navegación
-6. Gradle
+6. ViewModels
 7. Persistencia
 
 ---
-## [1.1. Jetpack Compose](#)
+## [4. Gradle](#)
 
-- Es un enfoque declarativo para la creación de interfaces de usuario (UI)
-- Se utiliza Kotlin en vez de XML 
-- Los bloques de construcción son conocidos como funciones composables
-- Puede utilizar la anotación @Preview para previsualizar de manera rápida sin necesidad de un emulador
+- Herramienta de construcción de código abierto
+- Facilita la gestión de dependencias 
+- Los archivos de configuración pueden ser escritos en Groovy o Kotlin 
+- Se puede extender a través de plugins
 
 ===
-## [1.1. Compose primeros pasos](#)
-<iframe width="560" height="315" src="https://www.youtube.com/embed/q0vIJfTvJ9g?si=Cuk4icQaruAzSr9q"  allowfullscreen></iframe>
+## [4. Gradle](#)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/D0X9vVvepqs?si=d1kf_7PLWbrPU-IO"  allowfullscreen></iframe>
 
 ---
-## [1.2. Layouts en Compose](#)
+## [5. Navegación](#)
 
-- Se refiere a la disposición y organización de los elementos visuales en una pantalla
-- En Compose existen varios Layouts como:
-	- Box
-	- Column
-	- Row
+- Permite usar un enfoque declarativo para la navegación 
+- Se define mediante un gráfico de navegación 
+- Cada ruta está asociada a un composable específico
 
 ===
-## [1.2. Layouts en Compose](#)
-<iframe width="560" height="315" src="https://www.youtube.com/embed/6Q3x5k5S2-k?si=8kURLL2o7qruPKFQ"  allowfullscreen></iframe>
+## [5. Navegación - Dependencias](#)
 
----
-## [1.3. Composables Básicos](#)
+```gradle
+dependencies {
+    // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:2.7.6")
 
-- Text()
-- Image()
-- Icon()
-- Spacer()
-
-===
-## [1.3. Composables Básicos](#)
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/L2jVnE1qlVk?si=N9KOqpZZu6kGHTK6"  allowfullscreen></iframe>
-
----
-## [1.4. Alineaciones](#)
-
-- Puede alinear los elementos dentro de Row y Column usando Arrangement y Alignment
-- Arrangement sirve para el eje principal de cada uno
-- Y alignment para el eje secundario 
-
-===
-## [1.4. Row Arrangement](#)
-
-![](img/ppt/u2-row_arrangement_visualization.gif)
-
-===
-## [1.4. Column Arrangement](#)
-
-![](img/ppt/u2-column_arrangement_visualization.gif)<!-- .element: height="500" -->
-
----
-## [1.5. Parámetros](#)
-
-- Al igual que una función normal, los composables pueden recibir parámetros
-- Muchas opciones se pueden realizar a través de parámetros como las alineaciones
-
-===
-## [1.5. Ejemplo Parámetros](#)
-
-```kotlin[2-4]
-Image(
-    painter = painterResource(id = R.drawable.todo_posit),
-    contentDescription = textoLogo,
-    modifier = Modifier.align(CenterHorizontally)
-)
-```
-
----
-## [1.6. Modifiers](#)
-
-- Son funciones que se aplican a los composables para modificar su apariencia o comportamiento
-- Pueden afectar propiedades como tamaño, color, espaciado, entre otros
-- Las funciones del Modifier pueden llamarse de manera encadenada
-- Lista de Modifiers: https://developer.android.com/jetpack/compose/modifiers-list
-
-===
-## [1.6. Ejemplo Modifiers](#)
-
-```kotlin[3-5]
-Row(
-    horizontalArrangement = Arrangement.SpaceBetween,
-    modifier = Modifier
-                .fillMaxWidth()
-				.clickable { Log.v("InicioUI::Row", "Alumno: ${alumno.nombre}") }
-) {
-    Text(alumno.nombre)
-    Text(alumno.nota.toString())
+	// otras dependencias
 }
 ```
 
----
-## [1.7. LazyColum y LazyRow](#)
-
-- LazyColumn y LazyRow son composables especializados para manejar listas verticales y horizontales respectivamente.
-- Están diseñados para manejar eficientemente grandes conjuntos de datos, ya que solo renderizan y componen los elementos visibles en la pantalla.
-- Dentro de su alcance tienen disponible una función llamada items() para iterar sobre una lista
-
 ===
-## [1.7. Ejemplo LazyColum](#)
+## [5. Navegación - Ejemplo](#)
 
-```kotlin[6-15]
-val alumnos = listOf<Alumno>(
-    Alumno("Sofía Andrade", 7.0f),
-    Alumno("Sergio Ramos", 5.0f),
-    Alumno("Alejandro Zapata", 4.3f)
-)
-LazyColumn() {
-    items(alumnos) { alumno ->
-        Column() {
-            Row() {
-                Text(alumno.nombre)
-                Text(alumno.nota.toString())
-            }
+```kotlin[]
+@Composable
+fun App(
+    navController: NavHostController = rememberNavController()
+) {
+    NavHost(
+        navController = navController,
+        startDestination = "inicio"
+    ) {
+        composable("inicio") {
+            HomePageUI(
+                onButtonSettingsClicked = {
+                    navController.navigate("settings")
+                }
+            )
+        }
+        composable("settings") {
+            SettingsPageUI(
+                onBackButtonClicked = {
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }
 ```
 
----
-## [1.8. Ejemplo](#)
-Ejemplo de Layouts, LazyColumn, Parámetros y Modifiers
-<iframe width="560" height="315" src="https://www.youtube.com/embed/HGGUmmDMK50?si=ZM9z8KUCjuBK5T-e"  allowfullscreen></iframe>
+===
+## [5. Navegación - Ejemplo](#)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ay7wyfOUqj8?si=QtoeLuoINOj3nNSz"  allowfullscreen></iframe>
 
 ---
-## [2.1. Recursos Drawables](#)
+## [6. ViewModels](#)
 
-- Los drawables se colocan dentro de la carpeta [res/drawable](#)
-- Puedes referenciar drawables en un diseño XML usando [@drawable/nombre_del_recurso](#)
-- En el código Java/Kotlin, puedes usar [R.drawable.nombre_del_recurso](#)
+- Mantienen y gestionan los datos relacionados la UI 
+- Permiten que sobrevivan los datos a los cambios de configuración (rotación de pantalla y otros)
+- Tienen un ciclo de vida independiente de las Activities o Fragments
 
 ===
-## [2.1. Recursos Drawables](#)
+## [6. ViewModels](#)
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/gShBpUF1UN0?si=w2QD_eOXeSkVzYDO" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-
----
-## [2.2. Recursos de Texto](#)
-
-
----
-## [3. Formularios en Compose](#)
-
+![ViewModel lifecycle](img/ppt/viewmodel-lifecycle.png) <!-- .element style="height: 570px;" -->
 
 ===
-## [3. Variables de Estado](#)
+## [6. ViewModels](#)
+
+```gradle
+dependencies {
+	// ViewModels para Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+
+	// collectAsStateWithLifecycle() - Flow
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+
+	// otras dependencias
+}
+```
 
 ===
-## [3. Controles Básicos](#)
+## [6. ViewModels y Compose](#)
 
-- Button()
-- TextField()
-- Checkbox
-- Switch
-
----
-## [4. Gradle](#)
-
-
----
-## [5. ViewModels](#)
-
+- En compose se puede recuperar una instancia usando la función [viewModel()](#)
+- Es ideal que el VM utilice variables reactivas
+- Como Flow o MutableState 
 
 ===
-## [5.1. Flow](#)
+## [6. Crear ViewModel](#)
+
+Un ViewModel es simplemente una clase que hereda de ViewModel
+```kotlin
+class TareasViewModel() : ViewModel() {
+	// código de la clase
+}
+```
+
+===
+## [6. Ejemplo ViewModel](#)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/K6Cq9j6RLGs?si=e1mdXQHYScZsbapZ"  allowfullscreen></iframe>
 
 
 ---
-## [5.1. Persistencia](#)
+## [7. Persistencia en Archivos](#)
+
+- Se puede trabajar con FileOutputStream para escribir
+- Y con FileInputStream para leer un archivo
+- Se recomienda el uso de Corrutinas
+- Para no bloquear la UI
+
+---
+## [7. Dependencias](#)
+
+```gradle
+dependencies {
+	// Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+}
+```
+
+===
+## [7. Serializable](#)
+
+Para poder persistir clases se debe implementar la interfaz Serializable
+```kotlin
+import java.io.Serializable
+
+data class Tarea(
+    val id:String,
+    val descripcion:String
+) : Serializable
+```
+
+===
+## [7.1. Persistencia Archivos](#)
+
+```kotlin
+fun guardar(fileOutputStream: FileOutputStream, tareas:List<Tarea>) {
+    fileOutputStream.use { fos ->
+        ObjectOutputStream(fos).use { oos ->
+            oos.writeObject(tareas)
+        }
+    }
+}
+```
+
+===
+## [7.2. Recuperar Archivos](#)
+
+```kotlin
+fun obtener(fileInputStream: FileInputStream):List<Tarea> {
+    return try {
+        fileInputStream.use { fis ->
+            ObjectInputStream(fis).use { ois ->
+                ois.readObject() as? List<Tarea> ?: emptyList()
+            }
+        }
+    } catch (fnfex:FileNotFoundException) {
+        emptyList<Tarea>()
+    } catch (ex:Exception) {
+        Log.e("TareaDiskDataSource", "obtener ex:Exception ${ex.toString()}")
+        emptyList<Tarea>()
+    }
+}
+```
 
 
 
