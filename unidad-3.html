@@ -1,0 +1,208 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Unidad 3 - Programación II</title>
+
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/reset.min.css" />
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/reveal.min.css" />
+		
+		<!-- otros themes: https://revealjs.com/themes/ Ejemplos: black, white, league, beige, sky, night, serif, simple, solarized, blood, moon -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/theme/white.min.css" />
+		<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/theme/blood.min.css" /> -->
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/plugin/highlight/monokai.min.css" />
+		
+		<link rel="stylesheet" href="estilo.css" />
+		
+		<!-- plugin notación matemática -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/plugin/math/math.min.js"></script>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+				<section data-separator="^---$" data-separator-vertical="^===$" data-separator-notes="^Note:" data-markdown data-line-numbers>
+    				<textarea data-template>
+## [Unidad 3](#)
+### Programación II
+	
+---
+## [Temas](#)
+
+- SQLite
+
+---
+## [SQLite](#)
+
+Puedes usar 2 formas de trabajo:
+
+1. [ROOM (recomendada)](https://developer.android.com/training/data-storage/room)
+2. [SQLiteOpenHelper](https://developer.android.com/training/data-storage/sqlite)
+
+===
+## [ROOM](#)
+
+- Librería tipo ORM
+- Hacen fácil la creación de la BD y tablas
+- También facilitan las consultas a través de una interfaz DAO
+
+===
+## [Corrutinas](#)
+
+- Solo disponibles en Kotlin, NO en Java
+- Hacen fácil la programación asincrónica 
+- Evitan que se bloquee el hilo principal de Android 
+- Y por tanto mejoran la experiencia del usuario
+
+===
+## [Implementación](#)
+
+1. Agregar Dependencias
+1. Agregar [plugin KSP](https://developer.android.com/build/migrate-to-ksp)
+1. Definición Entidad <!-- .element class="fragment" -->
+1. Definición Interfaz DAO <!-- .element class="fragment" -->
+1. Definición de Convertidores (opcional) <!-- .element class="fragment" -->
+1. Definición Base de Datos <!-- .element class="fragment" -->
+
+===
+## [Dependencias](#)
+
+```kotlin
+dependencies {
+	// ROOM
+	val room_version = "2.6.1"
+	implementation("androidx.room:room-runtime:$room_version")
+	annotationProcessor("androidx.room:room-compiler:$room_version")
+	ksp("androidx.room:room-compiler:$room_version")
+	implementation("androidx.room:room-ktx:$room_version")
+	
+	// otras dependencias
+}
+```
+
+===
+## [KSP](#)
+
+1. Incluir plugin con versión en build.gradle.kts
+2. Incluir plugin en build.gradle.kts (:app) 
+3. Alinear versión de KSP con versión de Kotlin
+
+
+- [Documentación KSP](https://developer.android.com/build/migrate-to-ksp)
+- [Versiones de KSP](https://github.com/google/ksp/tags)
+
+===
+## [Dependencias y KSP](#)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Zune7PuT77Q?si=GXBl09wPh-yIEN4L" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+===
+## [Entidad](#)
+
+```kotlin[]
+@Entity
+data class Gasto(
+    @PrimaryKey(autoGenerate = true) var id:Long? = null,
+    var monto:Long,
+    var fecha: LocalDate,
+    var categoria: String,
+    var descripcion: String
+)
+```
+
+===
+## [DAO](#)
+
+```kotlin[]
+@Dao
+interface GastoDao {
+
+    @Query("SELECT * FROM Gasto ORDER BY fecha DESC")
+    suspend fun obtenerTodos(): List<Gasto>
+
+    @Query("SELECT * FROM Gasto WHERE id = :id")
+    suspend fun obtenerPorId(id:Long): Gasto
+
+    @Insert
+    suspend fun insertar(gasto:Gasto)
+
+    @Update
+    suspend fun modificar(gasto:Gasto)
+
+    @Delete
+    suspend fun eilminar(gasto:Gasto)
+}
+```
+
+===
+## [Converters](#)
+
+```kotlin[]
+class LocalDateConverter {
+    @TypeConverter
+    fun fromTimestamp(value: Long?): LocalDate? {
+        return value?.let { LocalDate.ofEpochDay(it) }
+    }
+
+    @TypeConverter
+    fun dateToTimestamp(date: LocalDate?): Long? {
+        return date?.toEpochDay()
+    }
+}
+```
+
+===
+## [Database](#)
+
+```kotlin[]
+@Database(entities = [Gasto::class], version = 1)
+@TypeConverters(LocalDateConverter::class)
+abstract class BaseDatos : RoomDatabase() {
+    abstract fun gastoDao(): GastoDao
+}
+```
+
+===
+## [Entidades, DAO y BD](#)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/9Cj-DnNNb30?si=tbGCMdMmuk0TNfPu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+===
+## [Uso de ROOM con ViewModels](#)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8rNeHnVa6SQ?si=KPdFgShFWEUpIZHe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+
+
+				    </textarea>
+				</section>
+			</div>
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/reveal.min.js"></script>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/plugin/notes/notes.min.js"></script>
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/plugin/markdown/markdown.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.0.2/plugin/highlight/highlight.min.js"></script>
+		<script>			
+			Reveal.initialize({
+				hash: true,
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath.KaTeX ]
+			});
+			Reveal.on('ready', e => {
+				// e.previousSlide, e.currentSlide, e.indexh, e.indexv 				
+				const claseSlide = `slide-${e.indexh}-${e.indexv}`
+				document.body.className = `reveal-viewport ${claseSlide}`
+			});
+			Reveal.on('slidechanged', e => {
+				// e.previousSlide, e.currentSlide, e.indexh, e.indexv 				
+				const claseSlide = `slide-${e.indexh}-${e.indexv}`
+				document.body.className = `reveal-viewport ${claseSlide}`
+			});
+		</script>
+	</body>
+</html>
