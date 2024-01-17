@@ -33,6 +33,7 @@
 ## [Temas](#)
 
 - SQLite
+- Ubicación
 
 ---
 ## [SQLite](#)
@@ -175,7 +176,186 @@ abstract class BaseDatos : RoomDatabase() {
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/8rNeHnVa6SQ?si=KPdFgShFWEUpIZHe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
+---
+## [Ubicación](#)
 
+- Es posible conseguir la [ubicación del dispositivo](#) móvil
+- Se recupera en forma de [latitud y longitud](#) 
+- La forma recomendada es usando [Google Play Services](#) 
+- También se puede recuperar la ubicación usando [LocationManager](#)
+
+===
+## [Latitud y Longitud](#)
+
+- [Coordenadas geográficas](#) para especificar la ubicación de un punto
+- La latitud mide la distancia al [norte o al sur del ecuador](#)
+- La longitud mide la distancia al [este o al oeste del meridiano de Greenwich](#)
+- Se mide en [grados, minutos y segundos](#) 
+- Se puede [transforma a un número decimal](#)
+
+===
+## Latitud y Longitud
+<!-- .element style="color: white;" -->
+
+![Latitud y Longitud](img/ppt/lat-y-long.webp)
+<!-- .element style="height: 600px;" -->
+
+===
+## [Conversión a decimal](#)
+
+`$$
+\text{{Decimal}} = \text{{grados}} + \left(\frac{{\text{{minutos}}}}{{60}}\right) + \left(\frac{{\text{{segundos}}}}{{3600}}\right)
+$$`
+
+===
+## [Dependencias](#)
+
+```kotlin
+// Google Play Services for Location
+implementation("com.google.android.gms:play-services-location:21.0.1")
+```
+
+===
+## [Permisos - Manifest](#)
+
+```xml
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+```
+
+===
+## [Permisos - Compose](#)
+
+```kotlin[]
+val lanzadorPermisosUbicacion = 
+	rememberLauncherForActivityResult(
+	    contract = ActivityResultContracts.RequestMultiplePermissions(),
+	    onResult = {
+		    if ( it.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false)
+		         || 
+		         it.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false)
+		    ) {
+				// permisos ok, recuperar ubicación
+		    } else {
+		        // mostrar mensaje error, 
+		        // explicación permisos requeridos
+		    }
+		}
+	)
+```
+
+===
+## [Lanzar Petición - Ejemplo](#)
+
+```kotlin[]
+Button(
+	onClick = {
+		lanzadorPermisosUbicacion.launch(
+			arrayOf(
+				Manifest.permission.ACCESS_FINE_LOCATION,
+				Manifest.permission.ACCESS_COARSE_LOCATION
+			)
+		)
+	}
+) {
+	Text("Conseguir Ubicación")
+}
+
+```
+
+===
+Ejemplo con [FusedLocationProviderClient](https://developers.google.com/android/reference/com/google/android/gms/location/FusedLocationProviderClient):
+
+```kotlin[]
+val locationTask = fusedLocationProviderClient
+	.getCurrentLocation(
+		Priority.PRIORITY_HIGH_ACCURACY
+		, null
+	)
+locationTask.addOnSuccessListener {
+	onUbicacionOk(it.latitude, it.longitude) 
+	// callback definido x usuario
+}
+locationTask.addOnFailureListener {
+	onUbicacionErr()
+	// callback definido x usuario
+}
+```
+
+===
+Ejemplo con [LocationManager](https://developer.android.com/reference/android/location/LocationManager):
+
+```kotlin[]
+locationManager.getCurrentLocation(
+	LocationManager.GPS_PROVIDER,
+	null,
+	executor,
+	Consumer {
+		onUbicacionOk(Ubicacion(it.latitude, it.longitude))
+	}
+)
+```
+
+===
+## [Corrutinas en Play Services](#)
+
+```kotlin[]
+implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
+```
+
+===
+## [Convertir fn con Callbacks](#)
+
+```kotlin[]
+// Función que utiliza suspendCancellableCoroutine para hacer una operación asíncrona compatible con coroutines
+suspend fun operacionAsincronaConCoroutines(): String = 
+	suspendCancellableCoroutine { continuation ->
+		operacionAsincrona { resultado, error ->
+		    if (error != null) {
+		        continuation.resumeWithException(error)
+		    } else {
+		        continuation.resume(resultado ?: "")
+		    }
+		}
+
+		// Función invokeOnCancellation para limpiar recursos si la coroutine es cancelada
+		continuation.invokeOnCancellation {
+		    // Puedes realizar acciones de limpieza aquí si es necesario
+		}
+}
+```
+
+===
+## [Video Intro](#)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/IVRuTxv-b0w?si=20AVffbBWo6WQN3P" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+===
+## [Uso - Introducción](#)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/PSphVw5Zj38?si=_T43QI9alSxQVZBf" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+===
+## [Usando Google Play Services](#)
+
+Con proyecto desde 0 (requisito emulador con Google Play Store):
+<iframe width="560" height="315" src="https://www.youtube.com/embed/zlKEUMyapMQ?si=94HkBEnyIrRChurT" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+===
+Diagrama de Secuencia
+<!-- .element style="color: white;" -->
+
+![](https://mermaid.ink/img/pako:eNqNks9OwzAMxl-lymmTxgvkMAkNxIU_E1M59eIlXolIk5I4gjHtqXgEXgxvTdeCJkRO0eef7S92dkJ5jUKKiK8JncIrA3WApnIFH1DkQ1HGBMH4g9DJWbiYz5fgCKwFWShrVFGzriEUNUTyHdsTP-CVZ9oQky2GxkQfi7Q2CpT5-nS5taUhqDw700b72AV_FX4y-HbHz7AyG7g59J9MB_hEML3grDWoF6kCAuF5qOzsePeIrY-Gx7CVNdJJvlSUwE5UrjVqdSZz3DT14SGjj40xONY3H_ktC-_KPxOP1NjreBD19GzOMLah262JBMesPGq0EYdF3D_8fxeNjxQgXL-3Njtf5jL9ZtDpQsxEwzIYzZ9wd9ArQc_YYCUkXzVuIFmqROX2jEIiv9o6JSSFhDORWs0rzH9WyA2w2_0368H4Gw?type=png)
+
+===
+## [Uso Proyecto Gastos - Introducción](#)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/PSphVw5Zj38?si=ujvq-KBFHqiy1YXy" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+===
+## [Setup Ejemplo](#)
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/p2IFwL-OXVs?si=NWWoRts1z9pwrr4D" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 				    </textarea>
 				</section>
